@@ -1,20 +1,44 @@
+
 # Shiny Dashboard
 
+## Docker setup and run
 
-# Docker setup and run
-
-## Install Docker
+### Install Docker
 - **macOS / Windows**: Install Docker Desktop and start it.
 - **Linux**: Install Docker Engine via your distro package manager and start the service.
 
-## Build the project
+### Development 
 From the repository root:
+
 ```bash
-docker build -t shiny-dashboard .
+make dev
+```
+If for whatever reason `make` doesn't work you can run this instead. 
+```bash
+docker compose up
 ```
 
-## Run the Server
+- Uses Docker Compose
+- Supports reload on code changes
+- No rebuild needed unless dependencies change
+
+Open:
+```
+http://localhost:8000
+```
+
+### Manual Docker build (I have this automated so you shouldn't have to do this, but ya never know...)
+If you want to build and run without Compose:
+
 ```bash
+docker build -t shiny-dashboard .
 docker run --rm -p 8000:8000 shiny-dashboard
 ```
-Then open `http://localhost:8000` in a non-chrome based browser. It'll still work in chrome, but my feelings will be hurt.
+
+Open:
+```
+http://localhost:8000
+```
+
+Chrome will still work, but my feelings may be hurt.
+
