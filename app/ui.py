@@ -28,6 +28,13 @@ app_ui = ui.page_sidebar(
     ),
     ui.navset_card_tab(
         ui.nav_panel(
+            "Data Table",
+            ui.card(
+                ui.card_header("Current Data"),
+                ui.output_data_frame("imported_data"),
+            ),
+        ),
+        ui.nav_panel(
             "R-squared",
             ui.card(
                 ui.card_header("R-squared"),
