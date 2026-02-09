@@ -23,7 +23,7 @@ def sd_tab():
                         # Place the loaded variable here
                         standard_dev_content 
                     ),
-                    ui.accordion_panel("How is Standard Deviation Interpreted", "Section B content"),
+                    ui.accordion_panel("How is Standard Deviation Interpreted", "Content"),
                     
                     id="acc",  
                     open="What is Standard Deviation",
