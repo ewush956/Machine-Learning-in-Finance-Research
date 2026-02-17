@@ -1,0 +1,43 @@
+<h3>Definition</h3>
+<p>
+  <strong>Standard deviation</strong> tells you how "spread out" numbers usually are from their average.
+  If the standard deviation is small, most values hug the mean. If it's large, values wander farther away.
+</p>
+
+<h3>Definition Mathematical</h3>
+<p>
+  It's the square root of the average squared distance from the mean.
+  In symbols (sample standard deviation):
+</p>
+
+<pre><code>s = sqrt( (1 / (n - 1)) * Σ (xᵢ - x̄)² )</code></pre>
+
+<ul>
+  <li><code>x̄</code> = mean (average)</li>
+  <li><code>n - 1</code> is used for a <em>sample</em> (common in real datasets)</li>
+</ul>
+
+<h3>Key intuition</h3>
+<ul>
+  <li>It is measured in the <strong>same units</strong> as the data.</li>
+  <li>It's a "typical distance from average," not a max/min.</li>
+  <li>Outliers can inflate it (because squaring makes big deviations explode).</li>
+</ul>
+
+<hr/>
+
+<h3>Finance note: use returns, not prices</h3>
+<p>
+  In investing, standard deviation is usually applied to <strong>returns</strong> (daily % changes),
+  not raw prices. Prices trend upward over time; returns are more “stationary” and comparable.
+</p>
+
+<p>
+  This dashboard computes daily <strong>log returns</strong>:
+</p>
+
+<pre><code>rₜ = ln(Cₜ / Cₜ₋₁)</code></pre>
+
+<p>
+  Log returns are nice because they add over time and behave better in many models.
+</p>

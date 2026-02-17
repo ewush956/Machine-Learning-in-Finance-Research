@@ -1,0 +1,31 @@
+from pathlib import Path
+from shiny import ui
+
+def load_html(filepath: str):
+    try:
+        with open(filepath, "r") as f:
+            return ui.HTML(f.read())
+    except FileNotFoundError:
+        return ui.p(f"Missing content file: {filepath}")
+
+test_html = load_html("Markdown/test/test.html")
+
+def sd_tab():
+    return ui.nav_panel(
+                "Standard Deviation",
+                    ui.layout_sidebar(
+                        ui.sidebar(
+                            ui.accordion(
+                                ui.accordion_panel("test", test_html),
+                                id="acc",
+                                open="What is Standard Deviation?",
+                            ),
+                            style="max-height: 80vh; overflow-y: auto;"
+                        ),
+                        ui.card(
+                            ui.card_header("Standard Deviation on Real Data"),
+                            ui.output_plot("plot_stddev"),
+                            full_screen=True
+                        ),
+                    ),
+                )
