@@ -9,14 +9,13 @@ import plotly.graph_objects as go
 def datatable_tab():
     return ui.nav_panel(
         "Data",
-        ui.page_navbar(
+        ui.hr(),
+        ui.h2(ui.output_text("table_title"), align="center"),
+        ui.hr(),
+        ui.navset_tab(
             ui.nav_panel(
                 "Table",
-                ui.output_data_frame("data_table"),
-            ),
-            ui.nav_panel(
-                "Candlestick",
-                output_widget("data_candles"),
+                ui.output_data_frame("data_table"), 
             ),
             ui.nav_panel(
                 "Summary",
@@ -27,52 +26,32 @@ def datatable_tab():
 
 
 ''' ========== Datatable Tab Calculations From Server.py Info ========== '''
-def datatable_tab_server(input, output, session, prices_df):
-    
+def datatable_tab_server(input, output, session, searched_ticker, ticker_info, history_df):
+
+    @reactive.calc
+    def table_df() -> pd.DataFrame:
+        df = history_df()
+        if df.empty:
+            return df
+
+        df = df.reset_index()
+        df.insert(0, "Row", range(1, len(df) + 1))
+        return df
+
+    @render.text
+    def table_title():
+        t = searched_ticker()
+        info = ticker_info()
+        name = info.get("longName") or info.get("shortName")
+        return f"{t} — {name}" if (t and name) else (t or "Enter a ticker and click Search")
+
     @render.data_frame
     def data_table():
-        df = prices_df()
-        return render.DataTable(df, width="100%", height="500px", summary=True)
-    
-    @render_widget
-    def data_candles():
-        df = prices_df()
-
-        # Make sure Date is a column
-        if "Date" not in df.columns:
-            df = df.reset_index()
-
-        fig = go.Figure(
-            data=[
-                go.Candlestick(
-                    x=df["Date"],
-                    open=df["Open"],
-                    high=df["High"],
-                    low=df["Low"],
-                    close=df["Close"],
-                    name=input.ticker(),  # uses your global sidebar input
-                )
-            ]
-        )
-
-        # SMA(20)
-        sma = df["Close"].rolling(window=20).mean()
-        fig.add_scatter(
-            x=df["Date"],
-            y=sma,
-            mode="lines",
-            name="SMA (20)",
-        )
-
-        fig.update_layout(
-            hovermode="x unified",
-            legend=dict(orientation="h", yanchor="top", y=1, xanchor="right", x=1),
-        )
-        return fig
+        return render.DataTable(table_df(), width="100%", height="500px", summary=True)
 
     @render.ui
     def data_summary():
-        df = prices_df()
+        df = table_df()
         close = df["Close"]
         last_close = float(close.iloc[-1])
         period_return = float(close.iloc[-1] / close.iloc[0] - 1)

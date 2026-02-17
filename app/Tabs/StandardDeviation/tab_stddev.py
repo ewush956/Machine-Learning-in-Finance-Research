@@ -28,7 +28,7 @@ def stddev_tab_ui():
 
 ''' ========== Standard Deviation Specific Server Functions ========== '''
 # Use for plotting, calculations, etc.
-def stddev_tab_server(input, output, session, prices_df):
+def stddev_tab_server(input, output, session, searched_ticker, ticker_info, history_df):
     @render.text
     def stddev_value():
         df = prices_df()
