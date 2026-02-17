@@ -1,7 +1,5 @@
 import pandas as pd
 from shiny import ui, render, reactive
-from shinywidgets import output_widget, render_widget
-import plotly.graph_objects as go
 
 
 ''' ========== Datatable Tab UI Layout ========== '''

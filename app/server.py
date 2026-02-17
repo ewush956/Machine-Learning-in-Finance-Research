@@ -1,4 +1,4 @@
-from shiny import Inputs, Outputs, Session, ui, render, reactive
+from shiny import Inputs, Outputs, Session, reactive
 import pandas as pd
 import yfinance as yf
 
