@@ -18,14 +18,5 @@ def server(input: Inputs, output: Outputs, session: Session):
         df.insert(0, "Row", range(1, len(df) + 1))
         return df
 
-    @render.data_frame
-    def imported_data():
-        return render.DataTable(
-            prices_df(),
-            width="100%",
-            height="750px",
-            summary=True
-        )
-
     datatable_tab_server(input, output, session, prices_df=prices_df)
     stddev_tab_server(input, output, session, prices_df=prices_df)
