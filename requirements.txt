@@ -4,3 +4,5 @@ numpy==2.2.6
 matplotlib==3.10.6
 openpyxl==3.1.5
 yfinance==1.2.0
+shinywidgets==0.7.1
+plotly==6.5.2
