@@ -16,6 +16,7 @@ app_ui = ui.page_sidebar(
         ui.input_text("ticker", "Enter Ticker", placeholder="e.g. AAPL"),
         ui.input_action_button("search", "Search"),
         ui.input_date_range("dates", "Select dates", start=start, end=end),
+        width="20rem"
     ),
     ui.navset_tab(
         datatable_tab(),
