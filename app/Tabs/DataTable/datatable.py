@@ -1,6 +1,7 @@
 from pathlib import Path
-from shiny import ui, render
+from shiny import ui, render, reactive
 import pandas as pd
+import yfinance as yf
 
 
 ''' ========== Datatable Tab UI Layout ========== '''
@@ -15,15 +16,14 @@ def datatable_tab():
     )
 
 
-''' ========== Datatable Specific Server Functions ========== '''
-# Use for plotting, calculations, etc.
-def datatable_tab_server(input, output, session, data_path: Path):
-    @render.data_frame
-    def imported_data():
-        df = pd.read_excel(data_path).copy()
-        df.insert(0, "Row", (df.index + 1))
-        return render.DataTable(df,
-                                width='100%',
-                                height='500px',
-                                summary=True
-                                )
+''' ========== Datatable Tab Calculations From Server.py Info ========== '''
+def datatable_tab_server(input, output, session, prices_df):
+    @reactive.calc
+    def daily_returns():
+        df = prices_df()
+        r = df["Close"].pct_change().dropna()
+        return r
+
+    @render.text
+    def stddev_value():
+        return f"Std dev (daily returns): {daily_returns().std():.6f}"

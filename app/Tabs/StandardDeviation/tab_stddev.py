@@ -1,6 +1,7 @@
 from pathlib import Path
 from shiny import ui, render
 from helpers import load_html
+import pandas as pd
 
 ''' ========== Standard Deviation Tab UI Layout ========== '''
 # User Interface Layout Only
@@ -27,7 +28,13 @@ def stddev_tab_ui():
 
 ''' ========== Standard Deviation Specific Server Functions ========== '''
 # Use for plotting, calculations, etc.
-def stddev_tab_server(input, output, session, data_path: Path):
+def stddev_tab_server(input, output, session, prices_df):
+    @render.text
+    def stddev_value():
+        df = prices_df()
+        r = df["Close"].pct_change().dropna()
+        return f"{r.std():.6f}"
+    
     @render.plot(alt="Standard Deviation Tab Data Plot")
     def stdev_plot():
         pass
