@@ -1,7 +1,6 @@
 from shiny import ui
 from Tabs.DataTable.datatable import datatable_tab
 from Tabs.StandardDeviation.tab_stddev  import stddev_tab_ui
-from stocks import stocks
 
 import pandas  as pd
 
