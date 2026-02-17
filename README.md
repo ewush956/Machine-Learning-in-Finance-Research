@@ -8,7 +8,7 @@ For this branch I was using Posit's built-in vscode extension.
 
 ### Running the App
 <ol>
-    <li>Check that you meet the requirements in the requirements.txt file</li>
+    <li>Check that you meet the requirements in the <strong>requirements.txt file</strong></li>
     <li>Have the <strong>Posit Shiny</strong> extension installed.</li>
     <li>Make sure you are in the app folder directory i.e. <strong>(Machine-Learning-in-Finance-Research/app/)</strong>.</li>
     <li>You can run two ways:
