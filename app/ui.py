@@ -11,8 +11,11 @@ start = end - pd.DateOffset(years=1)
 app_ui = ui.page_sidebar(
     ui.sidebar(
         ui.input_dark_mode(mode='dark'),
-        ui.h4("Finance Metrics Dashboard"),
-        ui.input_selectize("ticker", "Select Stocks", choices=stocks, selected="AAPL"),
+        ui.h4("Finance Metrics Dashboard", align=""),
+        ui.hr(),
+        ui.p("Yahoo Finance Ticker Search"),
+        ui.input_text("ticker", "Enter Ticker", placeholder="e.g. AAPL"),
+        ui.input_action_button("search", "Search"),
         ui.input_date_range("dates", "Select dates", start=start, end=end),
     ),
     ui.navset_tab(
