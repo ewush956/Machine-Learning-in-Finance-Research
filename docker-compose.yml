@@ -9,6 +9,6 @@ services:
     volumes:
       - .:/app
       - uploads:/app/data/uploads
-    command: ["shiny", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    command: ["shiny", "run", "app/app.py", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 volumes:
   uploads:

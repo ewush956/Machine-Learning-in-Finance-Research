@@ -1,0 +1,41 @@
+from shiny import ui
+from helpers import load_html
+
+
+''' ========== Standard Deviation Tab UI Layout ========== '''
+# User Interface Layout Only
+def stddev_tab_ui():
+    return ui.nav_panel(
+        "Standard Deviation",
+        ui.layout_sidebar(
+            ui.sidebar(
+                ui.accordion(
+                    ui.accordion_panel("What is it?", load_html("Markdown/StandardDeviationHTML/1_what_is_sd.html")),
+                    ui.accordion_panel("Interpretation", load_html("Markdown/StandardDeviationHTML/2_sd_interpretation.html")),
+                    open=[]
+                ),
+                width="33rem",
+                style="max-height: 80vh; overflow-y: auto;"
+            ),
+            ui.card(
+                ui.card_header("Current Data Results"),
+                ui.output_plot("stdev_plot")
+            ),
+        ),
+    )
+
+
+''' ========== Standard Deviation Specific Server Functions ========== '''
+# Use for plotting, calculations, etc.
+def stddev_tab_server(input, output, session, searched_ticker, ticker_info, history_df):
+    pass
+    # @render.text
+    # def stddev_value():
+    #     df = prices_df()
+    #     r = df["Close"].pct_change().dropna()
+    #     return f"{r.std():.6f}"
+    
+    # @render.plot(alt="Standard Deviation Tab Data Plot")
+    # def stdev_plot():
+    #     pass
+

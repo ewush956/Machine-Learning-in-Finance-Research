@@ -1,44 +1,25 @@
+## General Set Up for this branch
 
-# Shiny Dashboard
+___
 
-## Docker setup and run
+For this branch I was using Posit's built-in vscode extension.
 
-### Install Docker
-- **macOS / Windows**: Install Docker Desktop and start it.
-- **Linux**: Install Docker Engine via your distro package manager and start the service.
+![1771361743175](image/README/1771361743175.png)
 
-### Development 
-From the repository root:
-
-```bash
-make dev
-```
-If for whatever reason `make` doesn't work you can run this instead. 
-```bash
-docker compose up
-```
-
-- Uses Docker Compose
-- Supports reload on code changes
-- No rebuild needed unless dependencies change
-
-Open:
-```
-http://localhost:8000
-```
-
-### Manual Docker build (I have this automated so you shouldn't have to do this, but ya never know...)
-If you want to build and run without Compose:
-
-```bash
-docker build -t shiny-dashboard .
-docker run --rm -p 8000:8000 shiny-dashboard
-```
-
-Open:
-```
-http://localhost:8000
-```
-
-Chrome will still work, but my feelings may be hurt.
-
+### Running the App
+<ol>
+    <li>Check that you meet the requirements in the <strong>requirements.txt</strong> file</li>
+    <li>Have the <strong>Posit Shiny</strong> extension installed.</li>
+    <li>Make sure you are in the app folder directory i.e. <strong>(Machine-Learning-in-Finance-Research/app/)</strong>.</li>
+    <li>You can run two ways:
+        <ol>
+        <li>Clicking the <strong>run</strong> icon on the top right when the <strong>app.py</strong> file is open</li>
+        or
+        <li>In the commandline enter: <strong>shiny run --reload app.py</strong></li>
+        <ul>
+        <li>There will be a link you can <strong>ctrl+click</strong> to open in your browser in the <strong>INFO</strong> output on the terminal</li>
+        </ul>
+        </ol>
+    </li>
+    <li>If there are no errors it should output that the Application startup is complete or the connection is open</li>
+</ol>

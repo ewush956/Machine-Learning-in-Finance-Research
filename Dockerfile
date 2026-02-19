@@ -1,5 +1,5 @@
 
-FROM python:3.14-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -13,4 +13,4 @@ RUN pip install -U pip && pip install -r /app/requirements.txt
 COPY . /app
 
 EXPOSE 8000
-CMD ["shiny", "run", "app/main.py", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["shiny", "run", "app/app.py", "--host", "0.0.0.0", "--port", "8000", "--reload"]
