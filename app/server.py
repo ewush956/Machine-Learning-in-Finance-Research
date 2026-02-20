@@ -1,3 +1,4 @@
+from plot_theme import apply_matplotlib_theme
 from shiny import Inputs, Outputs, Session, reactive
 import pandas as pd
 import yfinance as yf
@@ -35,6 +36,11 @@ def server(input: Inputs, output: Outputs, session: Session):
             return tk.info or {}
         except Exception:
             return {}
+
+    # sync matplotlib theme. Also if ur reading this ur gay.
+    @reactive.effect
+    def _sync_matplotlib_theme():
+        apply_matplotlib_theme(input.color_mode())
 
     # price history (for only one fetch per Search)
     @reactive.calc
