@@ -8,7 +8,7 @@ def datatable_tab():
     return ui.nav_panel(
         "Data",
         ui.hr(),
-        ui.h2(ui.output_text("table_title"), align="center"),
+        ui.h5(ui.output_text("data_table_ticker_title"), align="center"),
         ui.hr(),
         ui.navset_tab(
             ui.nav_panel(
@@ -37,7 +37,7 @@ def datatable_tab_server(input, output, session, searched_ticker, ticker_info, h
         return df
 
     @render.text
-    def table_title():
+    def data_table_ticker_title():
         t = searched_ticker()
         info = ticker_info()
         name = info.get("longName") or info.get("shortName")
