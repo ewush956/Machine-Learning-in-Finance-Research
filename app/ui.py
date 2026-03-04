@@ -21,5 +21,6 @@ app_ui = ui.page_sidebar(
     ui.navset_tab(
         datatable_tab(),
         stddev_tab_ui(),
-    )
+    ),
+    style="max-height: 90vh",
 )
