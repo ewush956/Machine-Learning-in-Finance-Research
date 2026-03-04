@@ -12,6 +12,9 @@ from shiny import render
 def stddev_tab_ui():
     return ui.nav_panel(
         "Standard Deviation",
+        ui.hr(),
+        ui.h5(ui.output_text("standard_dev_tab_ticker_title"), align="center"),
+        ui.hr(),
         ui.layout_sidebar(
             ui.sidebar(
                 ui.accordion(
@@ -28,39 +31,46 @@ def stddev_tab_ui():
                     open=[],
                 ),
                 width="33rem",
-                style="max-height: 80vh; overflow-y: auto;",
+                style="max-height: 90vh; overflow-y: auto;",
+                title="About Standard Deviation Metrics"
             ),
-            ui.div(
-                ui.card(
-                    ui.card_header("Daily Returns with Standard Deviation Band"),
+            ui.accordion(
+                ui.accordion_panel(
+                    "Daily Returns with Standard Deviation Band",
                     ui.output_plot("stddev_returns_band_plot"),
                     load_html(
                         "Markdown/StandardDeviationHTML/3_returns_band_plot.html"
                     ),
                 ),
-                ui.card(
-                    ui.card_header(
-                        "Return Distribution (How Often Each Daily Change Happens)"
-                    ),
+                ui.accordion_panel(
+                    "Return Distribution (How Often Each Daily Change Happens)",
                     ui.output_plot("stddev_returns_distribution_plot"),
                     load_html(
                         "Markdown/StandardDeviationHTML/4_returns_dist_plot.html"
                     ),
                 ),
-                ui.card(
-                    ui.card_header("Rolling Volatility (How Risk Changes Over Time)"),
+                ui.accordion_panel(
+                    "Rolling Volatility (How Risk Changes Over Time)",
                     ui.output_plot("stddev_rolling_volatility_plot"),
                     load_html(
                         "Markdown/StandardDeviationHTML/5_rolling_volatility_plot.html"
                     ),
                 ),
-                style="display: grid; gap: 1rem;",
+                style="max-height: 90vh; overflow-y: auto;",
             ),
         ),
     )
 
 
 def stddev_tab_server(input, output, session, searched_ticker, ticker_info, history_df):
+    
+    @render.text
+    def standard_dev_tab_ticker_title():
+        t = searched_ticker()
+        info = ticker_info()
+        name = info.get("longName") or info.get("shortName")
+        return f"{t} — {name}" if (t and name) else (t or "Enter a ticker and click Search")
+    
     def _get_daily_returns_percent(df: pd.DataFrame) -> pd.Series:
         if df is None or df.empty or "Close" not in df.columns:
             return pd.Series(dtype=float)
@@ -79,7 +89,7 @@ def stddev_tab_server(input, output, session, searched_ticker, ticker_info, hist
     def stddev_returns_band_plot():
         df = history_df()
         returns = _get_daily_returns_percent(df)
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(10, 6))
 
         if returns.empty:
             ax.set_title("Daily Returns with Standard Deviation Band")
@@ -131,7 +141,7 @@ def stddev_tab_server(input, output, session, searched_ticker, ticker_info, hist
         df = history_df()
         returns = _get_daily_returns_percent(df)
 
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(10, 6))
 
         if returns.empty:
             ax.set_title("Return Distribution (How Often Each Daily Change Happens)")
@@ -190,7 +200,7 @@ def stddev_tab_server(input, output, session, searched_ticker, ticker_info, hist
         df = history_df()
         returns = _get_daily_returns_percent(df)
 
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(10, 6))
 
         if returns.empty:
             ax.set_title("Rolling Volatility (How Risk Changes Over Time)")
