@@ -5,6 +5,7 @@ import yfinance as yf
 
 from Tabs.DataTable.datatable import datatable_tab_server
 from Tabs.StandardDeviation.tab_stddev import stddev_tab_server
+from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_server
 
 ''' ========== Global Server ========== '''
 def server(input: Inputs, output: Outputs, session: Session):
@@ -60,6 +61,12 @@ def server(input: Inputs, output: Outputs, session: Session):
         history_df=history_df,
     )
     stddev_tab_server(
+        input, output, session,
+        searched_ticker=searched_ticker,
+        ticker_info=ticker_info,
+        history_df=history_df,
+    )
+    sharpe_ratio_tab_server(
         input, output, session,
         searched_ticker=searched_ticker,
         ticker_info=ticker_info,
