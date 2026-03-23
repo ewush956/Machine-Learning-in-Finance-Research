@@ -1,6 +1,7 @@
 from shiny import ui
 from Tabs.DataTable.datatable import datatable_tab
 from Tabs.StandardDeviation.tab_stddev  import stddev_tab_ui
+from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_ui
 
 import pandas  as pd
 
@@ -21,6 +22,7 @@ app_ui = ui.page_sidebar(
     ui.navset_tab(
         datatable_tab(),
         stddev_tab_ui(),
+        sharpe_ratio_tab_ui(),
     ),
     style="max-height: 90vh",
 )
