@@ -1,3 +1,5 @@
+import re
+
 fuggin_stonks = {
     # Technology
     "Apple": "AAPL",
@@ -130,3 +132,18 @@ fuggin_stonks = {
     "Nasdaq-100 ETF (QQQ)": "QQQ",
     "Total Market ETF (VTI)": "VTI",
 }
+
+def test_query(query : str):
+    query = query.strip().lower()
+    pattern = re.compile(f"^{re.escape(query)}", re.IGNORECASE)
+    results = {
+        name : ticker
+        for name, ticker in fuggin_stonks.items()
+        if pattern.search(name) or pattern.search(ticker)
+    }
+    if results:
+        return results
+    else:
+        return f"No results found in query: '{query}'"
+
+print(test_query("aap"))
