@@ -4,3 +4,4 @@ numpy==2.2.6
 matplotlib==3.10.6
 openpyxl==3.1.5
 yfinance==1.2.0
+requests-html==0.10.0
