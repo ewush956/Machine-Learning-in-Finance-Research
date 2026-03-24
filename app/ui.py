@@ -2,42 +2,19 @@ from shiny import ui
 from Tabs.DataTable.datatable import datatable_tab
 from Tabs.StandardDeviation.tab_stddev  import stddev_tab_ui
 from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_ui
-from pathlib import Path
-import importlib.util
 
 import pandas  as pd
+from ticker_info import fuggin_stonks
 
 end = pd.Timestamp.now()
 start = end - pd.DateOffset(years=1)
 
 
 def _load_ticker_choices() -> dict[str, str]:
-    ticker_file = Path(__file__).resolve().parent.parent / "ticker_info.py"
-    spec = importlib.util.spec_from_file_location("ticker_info_module", ticker_file)
-    if spec is None or spec.loader is None:
-        return {}
-
-    ticker_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(ticker_module)
-    parse_query = getattr(ticker_module, "test_query", None)
-    if parse_query is None:
-        return {}
-
-    ticker_map = parse_query("")
-    if not isinstance(ticker_map, dict):
-        return {}
-
-    display_overrides = {
-        "Apple": "Apple Inc.",
-    }
     choices = {}
-    for company, ticker in ticker_map.items():
-        display_name = display_overrides.get(company, company)
-        choices[ticker] = f"{display_name} ({ticker})"
+    for company, ticker in fuggin_stonks.items():
+        choices[ticker] = f"{company} ({ticker})"
     return dict(sorted(choices.items(), key=lambda item: item[1]))
-
-
-TICKER_CHOICES = _load_ticker_choices()
 
 app_ui = ui.page_sidebar(
     ui.sidebar(
@@ -48,11 +25,11 @@ app_ui = ui.page_sidebar(
         ui.input_selectize(
             "ticker",
             "Enter Ticker",
-            TICKER_CHOICES,
+            choices = _load_ticker_choices(),
             selected="NVDA",
             options={
                 "placeholder": "Search by company or ticker (e.g. AP, AAPL)",
-                "maxOptions": 10,
+                "maxOptions": 40,
             },
         ),
         ui.input_action_button("search", "Search"),
@@ -110,7 +87,7 @@ app_ui = ui.page_sidebar(
             """
         ),
         ui.input_date_range("dates", "Select dates", start=start, end=end),
-        width="20rem"
+        width="25rem"
     ),
     ui.navset_tab(
         datatable_tab(),
