@@ -9,26 +9,26 @@ from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_server
 
 ''' ========== Global Server ========== '''
 def server(input: Inputs, output: Outputs, session: Session):
-# what’s in the text box right now (updates while typing)
-    @reactive.calc
-    def typed_ticker() -> str:
-        return (input.ticker() or "").strip().upper()
+    default_ticker = "NVDA"
+    searched_ticker_state = reactive.value(default_ticker)
 
-    # what the user "committed" by clicking Search (updates only on Search)
-    @reactive.calc
+    @reactive.effect
     @reactive.event(input.search)
+    def _update_searched_ticker():
+        typed = (input.ticker() or "").strip().upper()
+        searched_ticker_state.set(typed or default_ticker)
+
+    @reactive.calc
     def searched_ticker() -> str:
-        return typed_ticker()
+        return searched_ticker_state()
 
     @reactive.calc
-    @reactive.event(input.search)
     def ticker_obj():
         t = searched_ticker()
         return yf.Ticker(t) if t else None
 
     # metadata: longName / shortName, etc. (one fetch per Search)
     @reactive.calc
-    @reactive.event(input.search)
     def ticker_info() -> dict:
         tk = ticker_obj()
         if tk is None:
@@ -45,7 +45,6 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     # price history (for only one fetch per Search)
     @reactive.calc
-    @reactive.event(input.search)
     def history_df() -> pd.DataFrame:
         tk = ticker_obj()
         if tk is None:
