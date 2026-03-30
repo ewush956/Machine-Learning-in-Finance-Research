@@ -6,10 +6,10 @@
 #
 # How to run:
 #   From your project root directory in the terminal:
-#       python -m pytest TestFiles/test_context_builder.py -v
+#       python -m pytest ./app/TestFiles/test_context_builder.py -v
 #
 #   Or without pytest, just run it directly:
-#       python TestFiles/test_context_builder.py
+#       python ./app/TestFiles/test_context_builder.py
 #
 # What we're asserting:
 #   1. Normal positive-return stock -> correct labels and sign
