@@ -115,16 +115,7 @@ def build_stock_context(
       as "Insufficient data" rather than "nan" in the prompt.
     """
     # The actual context string.
-    #
-    # Multi-line f-strings in Python: anything between the triple quotes
-    # is included literally, including newlines and spaces.
-    # The backslash at the end of the first line just lets us start the
-    # string content on the next line without an extra leading newline.
-    #
-    # The :<17 in the format spec is left-alignment padding.
-    # "Ticker:":<17 means: print "Ticker:" then pad with spaces until
-    # the total width is 17 characters. This keeps all the values
-    # vertically aligned, making the context easier for Claude to parse.
+    
     context = f"""\
         STOCK CONTEXT
         ========================================
