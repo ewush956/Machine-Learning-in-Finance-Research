@@ -1,5 +1,6 @@
 # llm_panel.py
 
+import anthropic
 import math
 import pandas as pd
 import numpy as np
@@ -182,3 +183,349 @@ def _compute_metrics(
         worst_day_pct=worst_day_pct,
         trading_days=trading_days,
     )
+
+
+def _call_llm(system: str, messages: list[dict]) -> str:
+    """
+    Makes a synchronous call to the Anthropic API and returns the
+    response text.
+
+    Parameters
+    ----------
+    system : str
+        The system prompt. Claude's instructions for this session.
+        This is the SYSTEM_PROMPT constant plus the STOCK CONTEXT block
+        appended together. It is sent with every call but not stored in
+        conversation history.
+
+    messages : list[dict]
+        The full conversation history in Anthropic's format:
+        [
+            {"role": "user",      "content": "What does high volatility mean?"},
+            {"role": "assistant", "content": "High volatility means..."},
+            {"role": "user",      "content": "Is that bad for me?"},
+        ]
+        The API is stateless, so it has no memory between calls. You must
+        send the entire history every time to maintain conversation context.
+
+    Returns
+    -------
+    str
+        The plain text of Claude's response. If anything goes wrong,
+        this raises an exception — the caller is responsible for catching it
+        and showing a friendly error message to the user.
+
+    Notes
+    -----
+    anthropic.Anthropic() reads the ANTHROPIC_API_KEY environment variable
+    automatically. You never pass the key in code. Set it in a .env file
+    at your project root and load it with python-dotenv, or export it in
+    your terminal before running the app.
+    """
+ 
+    # Creating the client inside the function rather than at module level
+    # means the import only happens when an API call is actually made.
+    # It also makes testing easier — you can patch this function entirely
+    # without the module failing to import if the key isn't set.
+    client = anthropic.Anthropic()
+
+    response = client.messages.create(
+        model=LLM_MODEL,
+        max_tokens=MAX_TOKENS,
+        system=system,
+        messages=messages,
+    )
+
+    # response.content is a list of content blocks.
+    # For a standard text response there will be exactly one block
+    # of type "text". We access its .text attribute for the string.
+    return response.content[0].text
+
+def llm_panel_ui():
+    """
+    Returns the UI card for the LLM assistant panel.
+
+    This function has no logic as it just declares structure.
+    It gets placed by ui.py into the collapsible right sidebar.
+    All dynamic content is handled by llm_panel_server().
+    """
+    return ui.card(
+        ui.card_header("💬 Ask the Assistant"),
+
+        # output_ui("llm_conversation") is a dynamic slot.
+        # The server fills it with styled chat bubbles whenever
+        # the conversation history reactive value changes.
+        ui.output_ui("llm_conversation"),
+
+        ui.hr(),
+
+        # This slot only renders visible content when the rate
+        # limit is hit. Otherwise the server returns an empty div.
+        ui.output_ui("llm_rate_warning"),
+
+        # Input row: text field takes most of the width, Send button
+        # takes the rest. col_widths must sum to 12 (Bootstrap grid).
+        ui.layout_columns(
+            ui.input_text(
+                "llm_input",
+                label=None,
+                placeholder="Ask a question about this stock...",
+                width="100%",
+            ),
+            ui.input_action_button(
+                "llm_send",
+                "Send",
+                class_="btn-primary",
+            ),
+            col_widths=[9, 3],
+        ),
+    )
+    
+    
+def llm_panel_server(
+    input, output, session,
+    searched_ticker,
+    ticker_info,
+    history_df,
+):
+    """
+    Server logic for the LLM assistant panel.
+
+    Parameters
+    ----------
+    input, output, session
+        Standard Shiny server arguments. Passed down from the global server
+        function in server.py — same pattern as the existing tab servers.
+
+    searched_ticker : reactive.calc
+        The currently searched ticker symbol as a string. e.g. "NVDA".
+        When this changes, the conversation resets and a new auto-summary fires.
+
+    ticker_info : reactive.calc
+        Dictionary of metadata from yfinance (longName, shortName, etc.).
+        Used to get the company's full name for the context string.
+
+    history_df : reactive.calc
+        The raw OHLCV DataFrame for the selected ticker and date range.
+        All metric calculations are derived from this.
+    """
+
+    # ── Reactive state ────────────────────────────────────────────────────────
+    #
+    # reactive.value() is Shiny's way of storing mutable state that triggers
+    # re-renders when it changes. Think of it like a variable that the UI is
+    # watching — whenever you call .set() on it, every output that depends on
+    # it automatically updates.
+
+    # The full conversation history. A list of dicts in Anthropic's format:
+    # [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]
+    # Starts empty and resets every time the user searches a new ticker.
+    conversation = reactive.value([])
+
+    # Counts how many API calls have been made this session.
+    # When it reaches MAX_CALLS_PER_SESSION, the input is disabled.
+    call_count = reactive.value(0)
+
+    # ── Internal helpers ──────────────────────────────────────────────────────
+    #
+    # These are plain functions defined inside the server function.
+    # They're "inside" so they can close over the reactive values above
+    # (conversation, call_count) without needing to pass them as arguments.
+    # They cannot be called from outside this function.
+
+    def _build_full_system_prompt() -> str:
+        """
+        Combines the static SYSTEM_PROMPT with the dynamic stock context.
+        Called fresh before every API call so the context always reflects
+        the current ticker and date range.
+        """
+        df = history_df()
+        ticker = searched_ticker()
+        info = ticker_info()
+        company_name = info.get("longName") or info.get("shortName") or ticker
+
+        # Pull start/end dates from the DataFrame index.
+        # yfinance returns a DatetimeIndex, so .date() converts each
+        # Timestamp to a plain date, and str() formats it as "YYYY-MM-DD".
+        if not df.empty:
+            start_date = str(df.index[0].date())
+            end_date = str(df.index[-1].date())
+        else:
+            start_date = "N/A"
+            end_date = "N/A"
+
+        metrics = _compute_metrics(df, ticker, company_name, start_date, end_date)
+        context_block = build_stock_context(**metrics)
+
+        # The \n\n between the system prompt and context block
+        # gives Claude a clear visual separator between its instructions
+        # and the data it's been given to work with.
+        return f"{SYSTEM_PROMPT}\n\n{context_block}"
+
+    def _fire_api_call(user_message: str) -> str | None:
+        """
+        Appends user_message to history, calls the API with the full
+        conversation, appends the response, and increments the call counter.
+
+        Returns the assistant's response string, or None if the rate limit
+        has been reached. Returns an error string if the API call fails —
+        the error is safe to display directly to the user.
+        """
+        # Check rate limit before doing anything.
+        # We check here rather than at the call sites so the limit
+        # is enforced consistently regardless of what triggered the call.
+        if call_count() >= MAX_CALLS_PER_SESSION:
+            return None
+
+        system = _build_full_system_prompt()
+
+        # Build the new message list: existing history + this new user message.
+        # We don't mutate the existing list — we create a new one.
+        # This is important because reactive.value() tracks identity,
+        # and mutating the existing list in place won't trigger re-renders.
+        updated_messages = conversation() + [
+            {"role": "user", "content": user_message}
+        ]
+
+        try:
+            response_text = _call_llm(system, updated_messages)
+        except Exception as e:
+            # If the API call fails (network error, invalid key, rate limit
+            # on Anthropic's side, etc.) we return a friendly message rather
+            # than letting the exception propagate and crash the session.
+            return f"⚠️ The assistant couldn't respond: {e}"
+
+        # Append assistant response and update both reactive values.
+        # Setting conversation triggers a re-render of llm_conversation.
+        # Setting call_count triggers a re-render of llm_rate_warning.
+        conversation.set(updated_messages + [
+            {"role": "assistant", "content": response_text}
+        ])
+        call_count.set(call_count() + 1)
+
+        return response_text
+
+    # ── Reactive effects ──────────────────────────────────────────────────────
+    #
+    # @reactive.effect marks a function that runs for its side effects
+    # (updating state, firing API calls) rather than returning a value.
+    #
+    # @reactive.event(x) means "only re-run this effect when x changes,
+    # regardless of what other reactives are accessed inside the body."
+    # Without @reactive.event, Shiny would re-run the effect whenever ANY
+    # reactive accessed inside it changes — which would be too broad here.
+
+    @reactive.effect
+    @reactive.event(searched_ticker)
+    def _auto_summarize():
+        """
+        Fires automatically whenever the user searches a new ticker.
+        Resets the conversation and generates a fresh opening summary.
+        """
+        ticker = searched_ticker()
+
+        # Always reset the conversation for a new ticker — we don't want
+        # AAPL follow-up questions going into an NVDA context.
+        conversation.set([])
+
+        # Don't fire an API call if there's no data yet.
+        # This can happen briefly during initial app load.
+        if not ticker or history_df().empty:
+            return
+
+        _fire_api_call(
+            f"Please give a beginner-friendly summary of {ticker}'s performance "
+            f"based on the data provided. Keep it to 3 to 5 sentences and avoid jargon."
+        )
+
+    @reactive.effect
+    @reactive.event(input.llm_send)
+    def _handle_send():
+        """
+        Fires when the user clicks the Send button.
+        Reads the text input, clears it, and fires the API call.
+        """
+        user_text = (input.llm_input() or "").strip()
+
+        # Do nothing if the input is empty or just whitespace.
+        if not user_text:
+            return
+
+        # Clear the text input immediately so the user knows their
+        # message was received. ui.update_text() is a Shiny helper
+        # that sets an input's value from the server side.
+        ui.update_text("llm_input", value="")
+
+        _fire_api_call(user_text)
+
+    # ── Render functions ──────────────────────────────────────────────────────
+
+    @render.ui
+    def llm_conversation():
+        """
+        Renders the full conversation history as styled chat bubbles.
+        Re-runs automatically whenever conversation() changes because
+        it reads conversation() — that's the reactive dependency.
+        """
+        msgs = conversation()
+
+        if not msgs:
+            return ui.p(
+                "Search a stock to get started.",
+                class_="text-muted small p-2",
+            )
+
+        bubbles = []
+        for msg in msgs:
+            role = msg["role"]
+            content = msg["content"]
+
+            if role == "user":
+                # User messages: right-aligned, slightly different background
+                bubbles.append(
+                    ui.div(
+                        ui.p(content, class_="mb-0 small"),
+                        class_="p-2 mb-2 rounded",
+                        style=(
+                            "background-color: #2a2d3e;"
+                            "margin-left: 15%;"
+                            "text-align: right;"
+                        ),
+                    )
+                )
+            else:
+                # Assistant messages: left-aligned
+                bubbles.append(
+                    ui.div(
+                        ui.p(content, class_="mb-0 small"),
+                        class_="p-2 mb-2 rounded",
+                        style=(
+                            "background-color: #1e2130;"
+                            "margin-right: 15%;"
+                        ),
+                    )
+                )
+
+        # *bubbles unpacks the list into positional arguments for ui.div().
+        # ui.div(*items) is equivalent to ui.div(item1, item2, item3, ...)
+        return ui.div(
+            *bubbles,
+            style="max-height: 420px; overflow-y: auto; padding: 0.5rem;",
+        )
+
+    @render.ui
+    def llm_rate_warning():
+        """
+        Shows a warning when the session call limit is reached.
+        Returns an empty div when under the limit so it takes no space.
+        """
+        if call_count() >= MAX_CALLS_PER_SESSION:
+            return ui.div(
+                ui.p(
+                    f"⚠️ You've used all {MAX_CALLS_PER_SESSION} questions for this session. "
+                    "Refresh the page to start fresh.",
+                    class_="text-warning small mb-0",
+                ),
+                class_="p-2",
+            )
+        return ui.div()
