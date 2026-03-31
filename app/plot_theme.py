@@ -6,6 +6,12 @@ from matplotlib import rcParams
 import matplotlib.pyplot as plt
 
 
+# ##########################################################
+# #                      Constants                         #
+# ##########################################################
+FIGURE_DPI = 90
+
+
 # #####################################################################################
 # #                      Dark/Light Mode Matplot Graph Themes                         #
 # #####################################################################################
@@ -27,7 +33,7 @@ def apply_matplotlib_theme(color_mode: str) -> None:
                 "axes.spines.top": False,
                 "axes.spines.right": False,
                 "legend.frameon": False,
-                "figure.dpi": 110,
+                "figure.dpi": FIGURE_DPI,
                 "savefig.bbox": "tight",
             }
         )
@@ -48,7 +54,7 @@ def apply_matplotlib_theme(color_mode: str) -> None:
                 "axes.spines.top": False,
                 "axes.spines.right": False,
                 "legend.frameon": False,
-                "figure.dpi": 110,
+                "figure.dpi": FIGURE_DPI,
                 "savefig.bbox": "tight",
             }
         )
