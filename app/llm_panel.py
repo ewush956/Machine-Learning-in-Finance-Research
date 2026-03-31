@@ -267,6 +267,16 @@ def llm_panel_ui():
         # The server fills it with styled chat bubbles whenever
         # the conversation history reactive value changes.
         ui.output_ui("llm_conversation"),
+        ui.tags.script("""
+            const observer = new MutationObserver(function() {
+                const chat = document.getElementById("llm_conversation");
+                if (chat) chat.scrollTop = chat.scrollHeight;
+            });
+            const target = document.getElementById("llm_conversation");
+            if (target) {
+                observer.observe(target, { childList: true, subtree: true });
+            }
+        """),
 
         ui.hr(),
 
@@ -283,7 +293,7 @@ def llm_panel_ui():
                     label=None,
                     placeholder="Ask me...",
                     width="100%",
-                    rows=4,
+                    rows=1,
                     resize="vertical",
                 ),
                 ui.tags.script("""
@@ -296,13 +306,13 @@ def llm_panel_ui():
                     }
                 """),
             ),
-            ui.input_action_button(
-                "llm_send",
-                "Send",
-                class_="btn-primary w-100 mt-1",
-                style="display:block;",
-            ),
             width="25rem"
+        ),
+        ui.input_action_button(
+        "llm_send",
+        "Send",
+        class_="btn-primary w-100 mt-1",
+        style="display:block;",
         ),
     )
     
