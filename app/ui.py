@@ -14,8 +14,13 @@ import pandas  as pd
 # ###########################################################
 # #                      Constants                          #
 # ###########################################################
+YEAR_OFFSET = 1
+MONTH_OFFSET = 0
+DAY_OFFSET = 0
 END_DATE = pd.Timestamp.now()
-START_DATE = END_DATE - pd.DateOffset(years=1)
+START_DATE = END_DATE - pd.DateOffset(days=DAY_OFFSET, 
+                                      months=MONTH_OFFSET, 
+                                      years=YEAR_OFFSET)
 
 
 # ################################################################
@@ -33,12 +38,12 @@ def _load_ticker_choices() -> dict[str, str]:
 # #####################################################################
 app_ui = ui.page_sidebar(
     ui.sidebar(
-        ui.input_dark_mode(id="color_mode", mode='dark'),
-        ui.h4("Finance Metrics Dashboard", align=""),
+        ui.input_dark_mode(id="color_mode", mode='light'),
+        ui.h5("Finance Metrics Dashboard", align=""),
         ui.p("Yahoo Finance Ticker Search"),
         ui.input_selectize(
-            "ticker",
-            "Enter Ticker",
+            id = "ticker",
+            label = "Enter Ticker",
             choices = _load_ticker_choices(),
             selected="",
             options={
@@ -46,7 +51,7 @@ app_ui = ui.page_sidebar(
                 "maxOptions": 25,
             },
         ),
-        ui.input_action_button("search", "Search"),
+        ui.input_action_button(id = "search", label = "Search"),
         ui.tags.script(
             """
             document.addEventListener("shiny:connected", function () {
@@ -102,7 +107,7 @@ app_ui = ui.page_sidebar(
         ),
         ui.input_date_range("dates", "Select dates", start=START_DATE, end=END_DATE),
         llm_panel_ui(),
-        width="20rem"
+        width="25rem"
     ),
     ui.layout_columns(
         ui.navset_tab(
@@ -111,5 +116,6 @@ app_ui = ui.page_sidebar(
             sharpe_ratio_tab_ui(),
         ),
     ),
+    id="main sidebar",
     style="max-height: 90vh",
 )
