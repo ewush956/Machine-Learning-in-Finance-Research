@@ -494,27 +494,27 @@ def llm_panel_server(
         for msg in msgs:
             role = msg["role"]
             content = msg["content"]
-
             if role == "user":
-                # User messages: right-aligned, slightly different background
                 bubbles.append(
                     ui.div(
-                        ui.p(content, class_="mb-0 small"),
-                        class_="p-2 mb-2 rounded",
+                        ui.HTML(markdown.markdown(content)),
+                        class_="p-2 mb-2 rounded small",
                         style=(
-                            "background-color: #2a2d3e;"
+                            "background-color: var(--bs-secondary-bg);"
                             "margin-left: 15%;"
                             "text-align: right;"
                         ),
                     )
                 )
             else:
-                # Assistant messages: left-aligned
                 bubbles.append(
                     ui.div(
                         ui.HTML(markdown.markdown(content)),
                         class_="p-2 mb-2 rounded small",
-                        style="background-color: #1e2130; margin-right: 15%;",
+                        style=(
+                            "background-color: var(--bs-tertiary-bg);"
+                            "margin-right: 15%;"
+                        ),
                     )
                 )
 
