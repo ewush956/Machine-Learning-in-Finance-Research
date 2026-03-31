@@ -15,10 +15,6 @@ def datatable_tab_ui():
                 "Table",
                 ui.output_data_frame("data_table"), 
             ),
-            ui.nav_panel(
-                "Summary",
-                ui.output_ui("data_summary"),
-            ),
         ),
     )
 
@@ -46,24 +42,3 @@ def datatable_tab_server(input, output, session, searched_ticker, ticker_info, h
     @render.data_frame
     def data_table():
         return render.DataTable(table_df(), width="100%", height="500px", summary=True)
-
-    @render.ui
-    def data_summary():
-        df = table_df()
-        close = df["Close"]
-        last_close = float(close.iloc[-1])
-        period_return = float(close.iloc[-1] / close.iloc[0] - 1)
-
-        # daily returns + annualized vol (rough but common)
-        rets = close.pct_change().dropna()
-        ann_vol = float(rets.std() * (252 ** 0.5))
-
-        return ui.div(
-            ui.h4("Quick stats"),
-            ui.tags.ul(
-                ui.tags.li(f"Last close: {last_close:,.2f}"),
-                ui.tags.li(f"Period return: {period_return:.2%}"),
-                ui.tags.li(f"Annualized volatility (from daily returns): {ann_vol:.2%}"),
-                ui.tags.li(f"Rows (trading days): {len(df)}"),
-            ),
-        )
