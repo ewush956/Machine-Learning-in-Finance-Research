@@ -1,4 +1,7 @@
-fuggin_stonks = {
+# ####################################################################################
+# #                      Company Tickers for Search Autofill                         #
+# ####################################################################################
+company_tickers = {
     # Technology
     "Apple": "AAPL",
     "Microsoft": "MSFT",
@@ -131,6 +134,10 @@ fuggin_stonks = {
     "Total Market ETF (VTI)": "VTI",
 }
 
+
+# ##################################################################################
+# #                     Tester Function for Company Tickers                        #
+# ##################################################################################
 # import re
 # def test_query(query : str):
 #     query = query.strip().lower()
