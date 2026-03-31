@@ -60,9 +60,7 @@ def sharpe_ratio_tab_ui():
     )
 
 
-def sharpe_ratio_tab_server(
-    input, output, session, searched_ticker, ticker_info, history_df
-):
+def sharpe_ratio_tab_server(input, output, session, searched_ticker, ticker_info, history_df, graph_color_mode_trigger):
     @render.text
     def sharpe_ratio_tab_ticker_title():
         t = searched_ticker()
@@ -95,6 +93,7 @@ def sharpe_ratio_tab_server(
     @output
     @render.plot(alt="Risk vs Return Scatter with Sharpe Guide")
     def sharpe_risk_return_scatter_plot():
+        graph_color_mode_trigger()
         df = history_df()
         returns = _get_daily_returns_decimal(df)
         rf_daily = _daily_risk_free_rate()
@@ -177,6 +176,7 @@ def sharpe_ratio_tab_server(
     @output
     @render.plot(alt="Rolling Sharpe Ratio")
     def sharpe_rolling_ratio_plot():
+        graph_color_mode_trigger()
         df = history_df()
         returns = _get_daily_returns_decimal(df)
         rf_daily = _daily_risk_free_rate()
@@ -229,6 +229,7 @@ def sharpe_ratio_tab_server(
     @output
     @render.plot(alt="Sharpe Components by Year")
     def sharpe_components_by_year_plot():
+        graph_color_mode_trigger()
         df = history_df()
         returns = _get_daily_returns_decimal(df)
         rf_daily = _daily_risk_free_rate()
