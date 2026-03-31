@@ -62,7 +62,7 @@ def stddev_tab_ui():
     )
 
 
-def stddev_tab_server(input, output, session, searched_ticker, ticker_info, history_df):
+def stddev_tab_server(input, output, session, searched_ticker, ticker_info, history_df, graph_color_mode_trigger):
     
     @render.text
     def standard_dev_tab_ticker_title():
@@ -87,6 +87,7 @@ def stddev_tab_server(input, output, session, searched_ticker, ticker_info, hist
     @output
     @render.plot(alt="Daily Returns with Standard Deviation Band")
     def stddev_returns_band_plot():
+        graph_color_mode_trigger()
         df = history_df()
         returns = _get_daily_returns_percent(df)
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -138,6 +139,7 @@ def stddev_tab_server(input, output, session, searched_ticker, ticker_info, hist
     @output
     @render.plot(alt="Return Distribution Histogram with Normal Overlay")
     def stddev_returns_distribution_plot():
+        graph_color_mode_trigger()
         df = history_df()
         returns = _get_daily_returns_percent(df)
 
@@ -197,6 +199,7 @@ def stddev_tab_server(input, output, session, searched_ticker, ticker_info, hist
     @output
     @render.plot(alt="Rolling Volatility Plot")
     def stddev_rolling_volatility_plot():
+        graph_color_mode_trigger()
         df = history_df()
         returns = _get_daily_returns_percent(df)
 
