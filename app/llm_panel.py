@@ -1,15 +1,19 @@
-# llm_panel.py
+# ########################################################
+# #                      Imports                         #
+# ########################################################
+from shiny import ui, render, reactive
+from context_builder import build_stock_context
 
 import markdown
 import anthropic
 import math
 import pandas as pd
 import numpy as np
-from shiny import ui, render, reactive
 
-from context_builder import build_stock_context
 
-# Constants -------------------------------------------------------------------
+# #################################################################
+# #                      Constants For LLM                        #
+# #################################################################
 
 # How many API calls one user can make in a single browser session.
 # A "session" in Shiny means from the moment the app loads in their browser
@@ -47,6 +51,10 @@ Guidelines:
 - Never give specific buy or sell advice. You explain what data means, not what to do.
 """
 
+
+# ###########################################################################
+# #                      Metrics Computation for LLM                        #
+# ###########################################################################
 def _compute_metrics(
     df: pd.DataFrame,
     ticker: str,
@@ -148,7 +156,6 @@ def _compute_metrics(
     # weekends and holidays, so a full year is ~252 days, not 365.
     trading_days = len(close)
 
-    # ── Sharpe Ratio ──────────────────────────────────────────────────────────
     # The Sharpe ratio measures return relative to risk.
     # Formula: sqrt(252) * mean(excess_returns) / std(excess_returns)
     #
@@ -188,7 +195,7 @@ def _compute_metrics(
 
 async def _call_llm(system: str, messages: list[dict]) -> str:
     """
-    Makes a synchronous call to the Anthropic API and returns the
+    Makes an asynchronous call to the Anthropic API and returns the
     response text.
 
     Parameters
@@ -218,10 +225,9 @@ async def _call_llm(system: str, messages: list[dict]) -> str:
 
     Notes
     -----
-    anthropic.Anthropic() reads the ANTHROPIC_API_KEY environment variable
-    automatically. You never pass the key in code. Set it in a .env file
-    at your project root and load it with python-dotenv, or export it in
-    your terminal before running the app.
+    anthropic.AsyncAnthropic() reads the ANTHROPIC_API_KEY environment variable
+    automatically. Set it in a .env file at your project root and load it with
+    python-dotenv, or export it in your terminal before running the app.
     """
  
     # Creating the client inside the function rather than at module level
@@ -242,6 +248,10 @@ async def _call_llm(system: str, messages: list[dict]) -> str:
     # of type "text". We access its .text attribute for the string.
     return response.content[0].text
 
+
+# #######################################################
+# #                      LLM UI                         #
+# #######################################################
 def llm_panel_ui():
     """
     Returns the UI card for the LLM assistant panel.
@@ -271,10 +281,10 @@ def llm_panel_ui():
                 ui.input_text_area(
                     "llm_input",
                     label=None,
-                    placeholder="Ask a question about this stock...",
+                    placeholder="Ask me...",
                     width="100%",
-                    rows=1,
-                    resize="none",
+                    rows=4,
+                    resize="vertical",
                 ),
                 ui.tags.script("""
                     const ta = document.querySelector('#llm_input textarea') || document.getElementById('llm_input');
@@ -301,7 +311,7 @@ def llm_panel_server(
     input, output, session,
     searched_ticker,
     ticker_info,
-    history_df,
+    history_df
 ):
     """
     Server logic for the LLM assistant panel.
@@ -325,8 +335,6 @@ def llm_panel_server(
         All metric calculations are derived from this.
     """
 
-    # ── Reactive state ────────────────────────────────────────────────────────
-    #
     # reactive.value() is Shiny's way of storing mutable state that triggers
     # re-renders when it changes. Think of it like a variable that the UI is
     # watching — whenever you call .set() on it, every output that depends on
@@ -341,8 +349,6 @@ def llm_panel_server(
     # When it reaches MAX_CALLS_PER_SESSION, the input is disabled.
     call_count = reactive.value(0)
 
-    # ── Internal helpers ──────────────────────────────────────────────────────
-    #
     # These are plain functions defined inside the server function.
     # They're "inside" so they can close over the reactive values above
     # (conversation, call_count) without needing to pass them as arguments.
@@ -428,30 +434,11 @@ def llm_panel_server(
     # @reactive.event(x) means "only re-run this effect when x changes,
     # regardless of what other reactives are accessed inside the body."
     # Without @reactive.event, Shiny would re-run the effect whenever ANY
-    # reactive accessed inside it changes — which would be too broad here.
-
+    # reactive accessed inside it changes.
     @reactive.effect
     @reactive.event(searched_ticker)
-    async def _auto_summarize():
-        """
-        Fires automatically whenever the user searches a new ticker.
-        Resets the conversation and generates a fresh opening summary.
-        """
-        ticker = searched_ticker()
-
-        # Always reset the conversation for a new ticker — we don't want
-        # AAPL follow-up questions going into an NVDA context.
+    def _reset_on_ticker_change():
         conversation.set([])
-
-        # Don't fire an API call if there's no data yet.
-        # This can happen briefly during initial app load.
-        if not ticker or history_df().empty:
-            return
-
-        await _fire_api_call(
-            f"Please give a beginner-friendly summary of {ticker}'s performance "
-            f"based on the data provided. Keep it to 3 to 5 sentences and avoid jargon."
-        )
 
     @reactive.effect
     @reactive.event(input.llm_send)
@@ -473,7 +460,6 @@ def llm_panel_server(
 
         await _fire_api_call(user_text)
 
-    # ── Render functions ──────────────────────────────────────────────────────
 
     @render.ui
     def llm_conversation():
