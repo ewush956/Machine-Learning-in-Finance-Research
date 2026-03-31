@@ -6,6 +6,7 @@ import yfinance as yf
 from Tabs.DataTable.datatable import datatable_tab_server
 from Tabs.StandardDeviation.tab_stddev import stddev_tab_server
 from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_server
+from llm_panel import llm_panel_server
 
 ''' ========== Global Server ========== '''
 def server(input: Inputs, output: Outputs, session: Session):
@@ -38,7 +39,7 @@ def server(input: Inputs, output: Outputs, session: Session):
         except Exception:
             return {}
 
-    # sync matplotlib theme. Also if ur reading this ur gay.
+    # sync matplotlib theme.
     @reactive.effect
     def _sync_matplotlib_theme():
         apply_matplotlib_theme(input.color_mode())
@@ -66,6 +67,12 @@ def server(input: Inputs, output: Outputs, session: Session):
         history_df=history_df,
     )
     sharpe_ratio_tab_server(
+        input, output, session,
+        searched_ticker=searched_ticker,
+        ticker_info=ticker_info,
+        history_df=history_df,
+    )
+    llm_panel_server(
         input, output, session,
         searched_ticker=searched_ticker,
         ticker_info=ticker_info,

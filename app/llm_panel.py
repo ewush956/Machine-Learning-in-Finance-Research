@@ -1,5 +1,6 @@
 # llm_panel.py
 
+import markdown
 import anthropic
 import math
 import pandas as pd
@@ -266,18 +267,32 @@ def llm_panel_ui():
         # Input row: text field takes most of the width, Send button
         # takes the rest. col_widths must sum to 12 (Bootstrap grid).
         ui.layout_columns(
-            ui.input_text(
-                "llm_input",
-                label=None,
-                placeholder="Ask a question about this stock...",
-                width="100%",
+            ui.div(
+                ui.input_text_area(
+                    "llm_input",
+                    label=None,
+                    placeholder="Ask a question about this stock...",
+                    width="100%",
+                    rows=1,
+                    resize="none",
+                ),
+                ui.tags.script("""
+                    const ta = document.querySelector('#llm_input textarea') || document.getElementById('llm_input');
+                    if (ta) {
+                        ta.addEventListener('input', function () {
+                            this.style.height = 'auto';
+                            this.style.height = this.scrollHeight + 'px';
+                        });
+                    }
+                """),
             ),
             ui.input_action_button(
                 "llm_send",
                 "Send",
-                class_="btn-primary",
+                class_="btn-primary w-100 mt-1",
+                style="display:block;",
             ),
-            col_widths=[9, 3],
+            width="25rem"
         ),
     )
     
@@ -497,12 +512,9 @@ def llm_panel_server(
                 # Assistant messages: left-aligned
                 bubbles.append(
                     ui.div(
-                        ui.p(content, class_="mb-0 small"),
-                        class_="p-2 mb-2 rounded",
-                        style=(
-                            "background-color: #1e2130;"
-                            "margin-right: 15%;"
-                        ),
+                        ui.HTML(markdown.markdown(content)),
+                        class_="p-2 mb-2 rounded small",
+                        style="background-color: #1e2130; margin-right: 15%;",
                     )
                 )
 
