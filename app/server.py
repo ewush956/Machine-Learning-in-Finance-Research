@@ -1,17 +1,24 @@
+# ########################################################
+# #                      Imports                         #
+# ########################################################
 from plot_theme import apply_matplotlib_theme
 from shiny import Inputs, Outputs, Session, reactive
-import pandas as pd
-import yfinance as yf
-
 from Tabs.DataTable.datatable import datatable_tab_server
 from Tabs.StandardDeviation.tab_stddev import stddev_tab_server
 from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_server
 from llm_panel import llm_panel_server
 
-''' ========== Global Server ========== '''
+import pandas as pd
+import yfinance as yf
+
+
+# ####################################################################
+# #                      Main Server for App                         #
+# ####################################################################
 def server(input: Inputs, output: Outputs, session: Session):
-    default_ticker = "NVDA"
+    default_ticker = ""
     searched_ticker_state = reactive.value(default_ticker)
+    graph_color_mode_trigger = reactive.value(0)
 
     @reactive.effect
     @reactive.event(input.search)
@@ -41,8 +48,14 @@ def server(input: Inputs, output: Outputs, session: Session):
 
     # sync matplotlib theme.
     @reactive.effect
+    @reactive.event(input.color_mode)
     def _sync_matplotlib_theme():
+        print("[theme] effect fired")
+        mode = input.color_mode()
+        print(f"[theme] switching to: {mode}, trigger count: {graph_color_mode_trigger()}")
         apply_matplotlib_theme(input.color_mode())
+        graph_color_mode_trigger.set(graph_color_mode_trigger() + 1)
+
 
     # price history (for only one fetch per Search)
     @reactive.calc
@@ -65,16 +78,18 @@ def server(input: Inputs, output: Outputs, session: Session):
         searched_ticker=searched_ticker,
         ticker_info=ticker_info,
         history_df=history_df,
+        graph_color_mode_trigger=graph_color_mode_trigger
     )
     sharpe_ratio_tab_server(
         input, output, session,
         searched_ticker=searched_ticker,
         ticker_info=ticker_info,
         history_df=history_df,
+        graph_color_mode_trigger=graph_color_mode_trigger
     )
     llm_panel_server(
         input, output, session,
         searched_ticker=searched_ticker,
         ticker_info=ticker_info,
-        history_df=history_df,
+        history_df=history_df
     )
