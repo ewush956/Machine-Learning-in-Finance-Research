@@ -29,7 +29,7 @@ app_ui = ui.page_sidebar(
             choices = _load_ticker_choices(),
             selected="NVDA",
             options={
-                "placeholder": "Search by company or ticker (e.g. AP, AAPL)",
+                "placeholder": "Search by company or ticker",
                 "maxOptions": 40,
             },
         ),
@@ -88,12 +88,15 @@ app_ui = ui.page_sidebar(
             """
         ),
         ui.input_date_range("dates", "Select dates", start=start, end=end),
-        width="25rem"
+        llm_panel_ui(),
+        width="20rem"
     ),
-    ui.navset_tab(
-        datatable_tab_ui(),
-        stddev_tab_ui(),
-        sharpe_ratio_tab_ui(),
+    ui.layout_columns(
+        ui.navset_tab(
+            datatable_tab_ui(),
+            stddev_tab_ui(),
+            sharpe_ratio_tab_ui(),
+        ),
     ),
     style="max-height: 90vh",
 )
