@@ -1,7 +1,14 @@
-import matplotlib.pyplot as plt
+# ########################################################
+# #                      Imports                         #
+# ########################################################
 from matplotlib import rcParams
 
+import matplotlib.pyplot as plt
 
+
+# #####################################################################################
+# #                      Dark/Light Mode Matplot Graph Themes                         #
+# #####################################################################################
 def apply_matplotlib_theme(color_mode: str) -> None:
     if color_mode == "dark":
         plt.style.use("dark_background")
