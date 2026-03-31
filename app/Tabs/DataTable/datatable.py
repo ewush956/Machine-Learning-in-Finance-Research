@@ -4,7 +4,7 @@ from shiny import ui, render, reactive
 
 ''' ========== Datatable Tab UI Layout ========== '''
 # User Interface Layout Only
-def datatable_tab():
+def datatable_tab_ui():
     return ui.nav_panel(
         "Data",
         ui.hr(),
