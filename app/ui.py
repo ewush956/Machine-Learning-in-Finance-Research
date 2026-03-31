@@ -27,7 +27,7 @@ app_ui = ui.page_sidebar(
             "ticker",
             "Enter Ticker",
             choices = _load_ticker_choices(),
-            selected="NVDA",
+            selected="",
             options={
                 "placeholder": "Search by company or ticker",
                 "maxOptions": 40,

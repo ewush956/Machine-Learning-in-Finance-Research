@@ -186,7 +186,7 @@ def _compute_metrics(
     )
 
 
-def _call_llm(system: str, messages: list[dict]) -> str:
+async def _call_llm(system: str, messages: list[dict]) -> str:
     """
     Makes a synchronous call to the Anthropic API and returns the
     response text.
@@ -228,9 +228,9 @@ def _call_llm(system: str, messages: list[dict]) -> str:
     # means the import only happens when an API call is actually made.
     # It also makes testing easier — you can patch this function entirely
     # without the module failing to import if the key isn't set.
-    client = anthropic.Anthropic()
+    client = anthropic.AsyncAnthropic()
 
-    response = client.messages.create(
+    response = await client.messages.create(
         model=LLM_MODEL,
         max_tokens=MAX_TOKENS,
         system=system,
@@ -377,7 +377,7 @@ def llm_panel_server(
         # and the data it's been given to work with.
         return f"{SYSTEM_PROMPT}\n\n{context_block}"
 
-    def _fire_api_call(user_message: str) -> str | None:
+    async def _fire_api_call(user_message: str) -> str | None:
         """
         Appends user_message to history, calls the API with the full
         conversation, appends the response, and increments the call counter.
@@ -403,7 +403,7 @@ def llm_panel_server(
         ]
 
         try:
-            response_text = _call_llm(system, updated_messages)
+            response_text = str(await _call_llm(system, updated_messages))
         except Exception as e:
             # If the API call fails (network error, invalid key, rate limit
             # on Anthropic's side, etc.) we return a friendly message rather
@@ -432,7 +432,7 @@ def llm_panel_server(
 
     @reactive.effect
     @reactive.event(searched_ticker)
-    def _auto_summarize():
+    async def _auto_summarize():
         """
         Fires automatically whenever the user searches a new ticker.
         Resets the conversation and generates a fresh opening summary.
@@ -448,14 +448,14 @@ def llm_panel_server(
         if not ticker or history_df().empty:
             return
 
-        _fire_api_call(
+        await _fire_api_call(
             f"Please give a beginner-friendly summary of {ticker}'s performance "
             f"based on the data provided. Keep it to 3 to 5 sentences and avoid jargon."
         )
 
     @reactive.effect
     @reactive.event(input.llm_send)
-    def _handle_send():
+    async def _handle_send():
         """
         Fires when the user clicks the Send button.
         Reads the text input, clears it, and fires the API call.
@@ -471,7 +471,7 @@ def llm_panel_server(
         # that sets an input's value from the server side.
         ui.update_text("llm_input", value="")
 
-        _fire_api_call(user_text)
+        await _fire_api_call(user_text)
 
     # ── Render functions ──────────────────────────────────────────────────────
 
@@ -517,6 +517,9 @@ def llm_panel_server(
                         ),
                     )
                 )
+            # Safety check — if content isn't a string something went wrong upstream
+            if not isinstance(content, str):
+                continue
 
         # *bubbles unpacks the list into positional arguments for ui.div().
         # ui.div(*items) is equivalent to ui.div(item1, item2, item3, ...)
