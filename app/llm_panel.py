@@ -114,8 +114,10 @@ def _compute_metrics(
         worst_day_pct=0.0,
         trading_days=0,
     )
+    
 
     if df is None or df.empty or "Close" not in df.columns:
+        print("Fallback Data")
         return fallback
 
     close = df["Close"].dropna()
@@ -177,8 +179,8 @@ def _compute_metrics(
         sharpe_ratio = float(math.sqrt(252) * excess_returns.mean() / std_excess)
     else:
         sharpe_ratio = float("nan")
-
-    return dict(
+        
+    prompt_data = dict(
         ticker=ticker,
         company_name=company_name,
         start_date=start_date,
@@ -191,6 +193,8 @@ def _compute_metrics(
         worst_day_pct=worst_day_pct,
         trading_days=trading_days,
     )
+    print(prompt_data)
+    return prompt_data
 
 
 async def _call_llm(system: str, messages: list[dict]) -> str:
@@ -311,7 +315,7 @@ def llm_panel_ui():
         ui.input_action_button(
         "llm_send",
         "Send",
-        class_="btn-primary w-100 mt-1",
+        class_="btn-primary w-100",
         style="display:block;",
         ),
     )
@@ -393,18 +397,15 @@ def llm_panel_server(
         # and the data it's been given to work with.
         return f"{SYSTEM_PROMPT}\n\n{context_block}"
 
+
     async def _fire_api_call(user_message: str) -> str | None:
         """
         Appends user_message to history, calls the API with the full
         conversation, appends the response, and increments the call counter.
 
         Returns the assistant's response string, or None if the rate limit
-        has been reached. Returns an error string if the API call fails —
-        the error is safe to display directly to the user.
+        has been reached or all retries are exhausted.
         """
-        # Check rate limit before doing anything.
-        # We check here rather than at the call sites so the limit
-        # is enforced consistently regardless of what triggered the call.
         if call_count() >= MAX_CALLS_PER_SESSION:
             return None
 
@@ -418,23 +419,33 @@ def llm_panel_server(
             {"role": "user", "content": user_message}
         ]
 
-        try:
-            response_text = str(await _call_llm(system, updated_messages))
-        except Exception as e:
-            # If the API call fails (network error, invalid key, rate limit
-            # on Anthropic's side, etc.) we return a friendly message rather
-            # than letting the exception propagate and crash the session.
-            return f"⚠️ The assistant couldn't respond: {e}"
+        # Try up to 3 times before giving up.
+        # Transient network issues between Docker and Anthropic's servers
+        # are the most common cause of single failures — a retry usually succeeds.
+        # The call counter only increments on success so failed attempts
+        # don't eat into the session limit.
+        max_retries = 3
 
-        # Append assistant response and update both reactive values.
-        # Setting conversation triggers a re-render of llm_conversation.
-        # Setting call_count triggers a re-render of llm_rate_warning.
+        for attempt in range(max_retries):
+            try:
+                response_text = str(await _call_llm(system, updated_messages))
+                conversation.set(updated_messages + [
+                    {"role": "assistant", "content": response_text}
+                ])
+                call_count.set(call_count() + 1)
+                return response_text
+            except Exception as e:
+                print(f"[llm] attempt {attempt + 1} of {max_retries} failed: {e}")
+
+        # All retries exhausted — show a friendly message in the chat
+        # rather than silently doing nothing.
         conversation.set(updated_messages + [
-            {"role": "assistant", "content": response_text}
+            {"role": "assistant", "content": (
+                f"⚠️ The assistant couldn't respond after {max_retries} attempts. "
+                "Please try again in a moment."
+            )},
         ])
-        call_count.set(call_count() + 1)
-
-        return response_text
+        return None
 
     # ── Reactive effects ──────────────────────────────────────────────────────
     #
