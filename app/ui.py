@@ -35,7 +35,6 @@ app_ui = ui.page_sidebar(
     ui.sidebar(
         ui.input_dark_mode(id="color_mode", mode='dark'),
         ui.h4("Finance Metrics Dashboard", align=""),
-        ui.hr(),
         ui.p("Yahoo Finance Ticker Search"),
         ui.input_selectize(
             "ticker",
@@ -44,7 +43,7 @@ app_ui = ui.page_sidebar(
             selected="",
             options={
                 "placeholder": "Search by company or ticker",
-                "maxOptions": 40,
+                "maxOptions": 25,
             },
         ),
         ui.input_action_button("search", "Search"),
