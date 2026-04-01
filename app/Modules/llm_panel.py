@@ -2,7 +2,7 @@
 # #                      Imports                         #
 # ########################################################
 from shiny import ui, render, reactive
-from context_builder import build_stock_context
+from .context_builder import build_stock_context
 
 import markdown
 import anthropic
