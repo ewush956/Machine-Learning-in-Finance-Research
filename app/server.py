@@ -1,8 +1,8 @@
 # ########################################################
 # #                      Imports                         #
 # ########################################################
-from Modules.plot_theme import apply_matplotlib_theme
 from shiny import Inputs, Outputs, Session, reactive
+from Modules.plot_theme import apply_matplotlib_theme
 from Tabs.DataTable.datatable import datatable_tab_server
 from Tabs.StandardDeviation.tab_stddev import stddev_tab_server
 from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_server
