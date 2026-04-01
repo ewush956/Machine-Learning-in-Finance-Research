@@ -5,8 +5,8 @@ from shiny import ui
 from Tabs.DataTable.datatable import datatable_tab_ui
 from Tabs.StandardDeviation.tab_stddev  import stddev_tab_ui
 from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_ui
-from llm_panel import llm_panel_ui
-from ticker_info import company_tickers
+from Modules.llm_panel import llm_panel_ui
+from Modules.ticker_info import company_tickers
 
 import pandas  as pd
 

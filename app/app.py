@@ -1,7 +1,7 @@
 from shiny import App # Shiny Core application object
 from ui import app_ui # Our defined UI for layout etc.
 from server import server # Our Server logic where plots, tables, and calculations etc. live.
-from plot_theme import apply_matplotlib_theme
+from Modules.plot_theme import apply_matplotlib_theme
 
 apply_matplotlib_theme("dark")
 app = App(

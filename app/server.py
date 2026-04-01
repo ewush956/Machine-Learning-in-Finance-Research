@@ -1,12 +1,12 @@
 # ########################################################
 # #                      Imports                         #
 # ########################################################
-from plot_theme import apply_matplotlib_theme
+from Modules.plot_theme import apply_matplotlib_theme
 from shiny import Inputs, Outputs, Session, reactive
 from Tabs.DataTable.datatable import datatable_tab_server
 from Tabs.StandardDeviation.tab_stddev import stddev_tab_server
 from Tabs.SharpeRatio.tab_sharpe_ratio import sharpe_ratio_tab_server
-from llm_panel import llm_panel_server
+from Modules.llm_panel import llm_panel_server
 
 import pandas as pd
 import yfinance as yf
