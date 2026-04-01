@@ -1,7 +1,7 @@
 from shiny import ui
 from pathlib import Path
 
-APP_DIR = Path(__file__).resolve().parent
+APP_DIR = Path(__file__).resolve().parent.parent
 
 ''' ========== Global Helper Functions ========== '''
 def load_html(filepath: str):
