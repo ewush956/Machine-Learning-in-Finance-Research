@@ -4,6 +4,7 @@
 from shiny import ui, render, reactive
 from .context_builder import build_stock_context
 
+from os import environ
 import markdown
 import anthropic
 import math
@@ -406,6 +407,13 @@ def llm_panel_server(
         Returns the assistant's response string, or None if the rate limit
         has been reached or all retries are exhausted.
         """
+        if not environ.get("ANTHROPIC_API_KEY") or environ.get("ANTHROPIC_API_KEY") == "placeholder":
+            conversation.set(conversation() + [
+                {"role": "user", "content": user_message},
+                {"role": "assistant", "content": "⚠️ No API key configured. Ask your project lead for access."},
+            ])
+            return None
+        
         if call_count() >= MAX_CALLS_PER_SESSION:
             return None
 
