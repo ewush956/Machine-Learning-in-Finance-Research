@@ -20,12 +20,12 @@ def stddev_tab_ui():
                 ui.accordion(
                     ui.accordion_panel(
                         "What is it?",
-                        load_html("Markdown/StandardDeviationHTML/1_what_is_sd.html"),
+                        load_html("StandardDeviationHTML/1_what_is_sd.html"),
                     ),
                     ui.accordion_panel(
                         "Interpretation",
                         load_html(
-                            "Markdown/StandardDeviationHTML/2_sd_interpretation.html"
+                            "StandardDeviationHTML/2_sd_interpretation.html"
                         ),
                     ),
                     open=[],
@@ -39,21 +39,21 @@ def stddev_tab_ui():
                     "Daily Returns with Standard Deviation Band",
                     ui.output_plot("stddev_returns_band_plot"),
                     load_html(
-                        "Markdown/StandardDeviationHTML/3_returns_band_plot.html"
+                        "StandardDeviationHTML/3_returns_band_plot.html"
                     ),
                 ),
                 ui.accordion_panel(
                     "Return Distribution (How Often Each Daily Change Happens)",
                     ui.output_plot("stddev_returns_distribution_plot"),
                     load_html(
-                        "Markdown/StandardDeviationHTML/4_returns_dist_plot.html"
+                        "StandardDeviationHTML/4_returns_dist_plot.html"
                     ),
                 ),
                 ui.accordion_panel(
                     "Rolling Volatility (How Risk Changes Over Time)",
                     ui.output_plot("stddev_rolling_volatility_plot"),
                     load_html(
-                        "Markdown/StandardDeviationHTML/5_rolling_volatility_plot.html"
+                        "StandardDeviationHTML/5_rolling_volatility_plot.html"
                     ),
                 ),
                 style="max-height: 90vh; overflow-y: auto;",
