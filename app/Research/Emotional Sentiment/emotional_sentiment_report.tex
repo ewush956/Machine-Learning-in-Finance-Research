@@ -1,0 +1,193 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.75em}
+\renewcommand{\arraystretch}{1.2}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{Emotional Sentiment in the Market}}\\[0.5em]
+{\large How emotion, narratives, and fintech platforms shape financial markets}\\[1em]
+Alex Melnick, Amtoj Punia, Andrew Walsh, Evan Wushke \\
+COMP 4299 --Directed Reading\\
+Jordan Kidney
+\end{center}
+
+\section*{Executive summary}
+
+This report explains what I learned about investor sentiment and why it matters in fintech. My main takeaway is that markets are not driven only by earnings, rates, and balance sheets. They are also driven by fear, greed, hype, uncertainty, and the stories investors tell each other.
+
+What makes this especially relevant today is speed. Social media, mobile trading apps, and AI-based sentiment tools allow emotions to spread quickly and turn into price pressure almost immediately. Looking at the 2008 financial crisis, the COVID-19 crash, GameStop, and crypto, I came away convinced that sentiment is not a side issue in markets. In many situations, it is part of the market mechanism itself.
+
+\section{Introduction}
+
+When I started looking into this topic, I expected investor emotion to matter mostly at the extreme edge cases of the market, the more I read, the more obvious it became that sentiment can shape both everyday trading and major market events. Behavioral finance research shows that investors do not react to information in a perfectly rational way, and that their mood, expectations, and social environment can change asset prices in measurable ways (Baker \& Wurgler, 2007).
+
+For this report, I use the term `investor sentiment' to mean the part of market behavior that comes from optimism, pessimism, fear, excitement, or social contamination rather than from fundamentals alone. That does not mean fundamentals stop mattering, it means that in real markets, prices often reflect both value and emotion at the same time.
+
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.24\textwidth}|X|}
+\hline
+\textbf{Terminology} & \textbf{Meaning} \\
+\hline
+Investor sentiment & The overall mood of investors toward the market or a specific asset. \\
+\hline
+Herd behavior & Buying or selling because many other investors appear to be doing the same. \\
+\hline
+Narrative & A story that gives people a reason to believe prices should keep rising or falling. \\
+\hline
+VIX & A market-based measure of expected 30-day U.S. equity volatility, often treated as a fear gauge. \\
+\hline
+\end{tabularx}
+
+\section{Why emotions move prices}
+
+One of the clearest ideas in the literature is that sentiment becomes powerful when valuation is uncertain. Baker and Wurgler argue that sentiment has larger effects on securities that are harder to value and harder to arbitrage, including young, small, unprofitable, distressed, and non-dividend-paying firms (Baker \& Wurgler, 2006). That point stood out to me because it explains why speculative corners of the market feel especially emotional.
+
+Media and public discussion also matter. Tetlock found that unusually pessimistic media tone is associated with downward pressure on stock prices followed by a bounce back, which suggests that public mood can influence prices in the short run rather than simply mirror them (Tetlock, 2007). Shiller makes a similar point in a broader way, stories spread socially, and when a story goes viral, demand can rise with it (Shiller, 2017).
+
+The emotional channels I found most important were:
+
+Fear. Fear makes investors sell quickly, reduce risk, and look for safety even when prices have already fallen a lot.
+
+Greed. Greed encourages chasing returns, stretching valuations, and ignoring warning signs.
+
+Herd behavior. People often follow the crowd because being wrong together feels safer than being wrong alone.
+
+Narrative contagion. Investors do not trade only on facts, they also trade on stories about innovation, collapse, revenge, disruption, or adoption.
+
+\section{Why fintech makes sentiment stronger}
+
+The fintech angle is what makes this topic feel especially current. In older markets, sentiment still mattered, but it spread more slowly through newspapers, television, and word of mouth. Today, a trader can see a viral post, a notification, a trending ticker, and a chart of price momentum in the same minute. That speed changes behavior.
+
+Recent FINRA research shows how normal it has become for investors to get market information online. In its 2025 report, 45 percent of investors said they receive financial advice from the internet, 24 percent said they get information from social media, and reliance on social media was much higher among younger adults than among older ones (FINRA, 2025). In my view, this is one of the strongest fintech links in the topic, platforms do not just reflect sentiment, they distribute it.
+
+The research also shows that this distribution has consequences. Warkulat and Pelster find that attention generated on the subreddit wallstreetbets leads to more uninformed trading, higher portfolio risk, and lower holding-period returns for retail investors (Warkulat \& Pelster, 2024). That result matters because it connects online mood directly to real investor outcomes.
+
+\section{Case studies that made the idea feel real}
+
+The following cases helped me move from theory to evidence. Each one shows a different side of sentiment, greed before a crash, fear during a shock, social-media-driven enthusiasm, and momentum-heavy adoption narratives.
+
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.15\textwidth}|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.33\textwidth}|X|}
+\hline
+\textbf{Case} & \textbf{Dominant emotion} & \textbf{What happened} & \textbf{Why it matters} \\
+\hline
+2008 crisis & Greed, then panic & Loose credit and speculation helped inflate housing and credit markets before a severe collapse. & Shows how optimism can build fragility. \\
+\hline
+COVID-19 crash & Fear and uncertainty & Pandemic uncertainty triggered a rapid selloff, funding stress, and a historic volatility spike. & Shows how fear can dominate even before fundamentals are clear. \\
+\hline
+GameStop & Hype, identity, collective bullishness & Online communities helped drive extreme retail attention and price escalation. & Shows how fintech platforms can transmit mood directly into trading. \\
+\hline
+Crypto cycles & FOMO and adoption narratives & Retail investors often react to price gains as signals of future adoption, reinforcing momentum. & Shows how sentiment can become self-reinforcing in speculative assets. \\
+\hline
+\end{tabularx}
+
+\subsection{The 2008 financial crisis}
+
+The 2008 crisis is a good reminder that sentiment matters both before and during a collapse. The FDIC describes the boom leading up to the crisis as a period marked by loose credit, rampant speculation, and general greed in the housing market (FDIC, 2017). That language is important because it shows the emotional side of the build-up, confidence and optimism were not just background conditions, they helped support risk-taking that later proved fragile.
+
+Once the downturn began, sentiment flipped. Optimism turned into panic, trust in financial institutions weakened, and fear spread much faster than careful valuation could keep up. What I learned from this case is that sentiment is not only a force during bubbles, It is also a force during the break from bubble to crisis, when confidence disappears and markets start pricing worst-case scenarios.
+
+Emotion can help build a bubble, but it can also accelerate the collapse once confidence breaks.
+
+\subsection{The COVID-19 market shock in March 2020}
+
+The COVID-19 episode shows how quickly fear can move markets when the future becomes deeply uncertain. The Federal Reserve's May 2020 Financial Stability Report notes that significant strains emerged in funding markets and that emergency actions were required to stabilize them (Federal Reserve, 2020). This was not just a normal repricing event, it was a shock driven by uncertainty, fear, and a rush for liquidity.
+
+A useful sentiment indicator here is the VIX. Cboe defines the VIX as the market's expectation of 30 day forward looking volatility in U.S. equities based on S\&P 500 option prices (Cboe Global Markets, 2026). In March 2020, the VIX reached a record closing high of 82.69 as investors reacted to the early pandemic shock (Cboe Global Markets, 2026). For me, this case made the emotional side of markets easier to see because the fear was visible both in prices and in market wide volatility.
+
+When uncertainty is extreme, fear itself becomes a market force, not just a reaction to one.
+
+\subsection{GameStop and the meme-stock era}
+
+GameStop is probably the clearest modern case of sentiment being amplified by fintech. In its 2021 staff report, the SEC explained that GameStop and several other stocks experienced dramatic price increases as bullish retail sentiment spread through social media (SEC, 2021). What made this event unusual was not simply that a stock rose quickly. It was that identity, community, humor, and rebellion against institutional investors all became part of the trading story.
+
+This case also helped me understand that a market narrative can carry emotional meaning far beyond earnings or valuation. Buying was not always framed as a fundamental decision. In many cases it was framed as loyalty, momentum, entertainment, or participation in a social event. That is exactly why fintech matters here, the same platforms used to share emotions also make it easy to act on them immediately.
+
+Once emotion becomes social, public, and tradable in real time, price moves can detach from conventional valuation surprisingly fast.
+
+\subsection{Crypto, FOMO, and adoption narratives}
+
+I also wanted to include crypto because it shows sentiment in a setting where valuation is especially uncertain. Kogan, Makarov, Niessner, and Schoar argue that retail investors behave differently in cryptocurrencies than in stocks and gold, and they suggest that rising prices are often interpreted as evidence of future adoption, which then pushes prices further in the same direction (Kogan et al., 2023). The paper also notes that crypto markets have been marked by large boom-and-bust cycles and by social language such as FOMO.
+
+That feels consistent with the broader idea from Baker and Wurgler that sentiment matters most when valuation is subjective. In crypto, the story of future adoption often becomes part of the asset's value story itself, which makes sentiment unusually powerful.
+
+Crypto shows how sentiment can become self-reinforcing when investors treat rising prices as proof that the story is coming true.
+
+\section{How sentiment is measured in practice}
+
+One part of this topic I found especially interesting is that emotion can be studied systematically rather than just described informally. Researchers and firms measure sentiment in several ways.
+
+Market-based indicators. The VIX is the most visible example because it captures expected volatility from option prices and often rises when fear rises.
+
+Surveys. Investor surveys help capture whether people are broadly bullish, bearish, or uncertain.
+
+Text analysis. News headlines, earnings calls, Reddit posts, X posts, and discussion boards can all be analyzed with natural language processing.
+
+Behavioral proxies. Trading volume, search activity, and flows into speculative assets can reveal mood even when investors do not state it directly.
+
+The fintech side of this measurement problem is now a field of its own. Du, Mao, Cambria, and Xing describe financial sentiment analysis as a growing research area that combines NLP methods with market applications such as hypothesis testing and prediction (Du et al., 2024). At the same time, measurement is not perfect. Lee and Ryu warn that some variables used as sentiment proxies may partly reflect information content rather than pure emotion, which is an important limitation to keep in mind (Lee \& Ryu, 2024).
+
+\section{What this means for investors, platforms, and market learning}
+
+The biggest lesson I took from this research is that sentiment should not be treated as a soft or secondary factor. It affects how fast information spreads, how investors interpret risk, and how long prices can stay away from fundamentals.
+
+For investors, that means emotional awareness matters. A market move can be partly about earnings or rates, but it can also be about fear, overconfidence, FOMO, and group behavior. Ignoring that side of the market means missing part of the explanation.
+
+For fintech firms and platform designers, the topic raises a harder question. Features that increase access and engagement can also increase emotional trading. Recommendation engines, trending lists, social feeds, and instant execution all make markets more participatory, but they can also make them more reactive.
+
+What I found most useful is the idea that sentiment is not automatically irrational. Sometimes it helps reveal expectations that fundamentals have not fully absorbed yet. But the evidence strongly suggests that when sentiment becomes amplified by speed, social proof, and uncertainty, it can create meaningful mispricing and risk.
+
+\section{Personal Application}
+
+Learning about emotional sentiment changed the way I look at investing. Before digging into this topic, it was easy to think of the market as something driven mostly by numbers, reports, and technical information. After researching sentiment, I started to see that emotion is often one of the biggest forces behind price movement. Because of that, I now try to pay close attention not just to what is happening in the market, but also to how people are feeling about it.
+
+Personally, when sentiment is very negative, I often see that as a strong buying opportunity, if markets are falling because of bad news, political uncertainty, fear, or panic, many investors start selling emotionally rather than rationally, in those moments, prices can drop more than they really should. Instead of seeing that kind of negativity as only a warning sign, I try to see it as a chance to buy quality investments at a discount. To me, fear in the market often creates opportunity, especially when the long-term value of a company or the broader market has not actually changed as much as people’s emotions suggest.
+
+On the other hand, when sentiment is extremely positive, I become more cautious. When everyone is optimistic, buying aggressively, and acting out of greed or hype, I see that as a point where prices may be getting pushed too high, in those moments, I think it can make sense to sell, reduce risk, or at least avoid getting caught up in the excitement. When people feel like prices can only keep going up, that is usually when I remind myself that emotional markets can reverse just as quickly as they rise.
+
+What I took away from this research is that successful investing is not only about understanding assets, but also about understanding people. My personal approach is built around trying to stay calm when others are fearful and staying disciplined when others are greedy. I know that this mindset does not guarantee perfect results every time, but it helps me make decisions more logically and avoid following the crowd at the worst possible moment, in that sense, learning about investor sentiment has not just taught me how markets move, it has also shaped the way I want to behave as an investor myself.
+
+\section{Conclusion}
+
+After working through this topic, I would describe emotional sentiment as one of the market's most underrated drivers. Markets still respond to earnings, inflation, rates, and cash flows, but they also respond to fear, excitement, crowd behavior, and the stories people repeat to each other. That is why investor sentiment belongs in any serious discussion of fintech.
+
+What convinced me most was seeing the same pattern appear across very different cases. In 2008, optimism and speculation helped build fragility before panic took over. In 2020, fear and uncertainty pushed volatility to extreme levels. In GameStop, social platforms turned collective bullishness into a market event. In crypto, adoption narratives and FOMO reinforced momentum. Taken together, those cases show that sentiment does not just accompany market moves. Very often, it helps drive them.
+
+\section*{References}
+
+Baker, M., \& Wurgler, J. (2006). Investor sentiment and the cross-section of stock returns. Journal of Finance, 61(4), 1645--1680. \url{https://pages.stern.nyu.edu/~jwurgler/papers/wurgler_baker_cross_section.pdf}
+
+Baker, M., \& Wurgler, J. (2007). Investor sentiment in the stock market (NBER Working Paper No. 13189). National Bureau of Economic Research. \url{https://www.nber.org/papers/w13189}
+
+Cboe Global Markets. (2026). Cboe Volatility Index methodology. \url{https://cdn.cboe.com/resources/indices/Volatility_Index_Methodology_Cboe_Volatility_Index.pdf}
+
+Du, K., Mao, R., Cambria, E., \& Xing, F. (2024). Financial sentiment analysis: Techniques and applications. ACM Computing Surveys, 56(9). \url{https://doi.org/10.1145/3649451}
+
+Federal Deposit Insurance Corporation. (2017). Crisis and response: An FDIC history, 2008--2013 (Chapter 1, ``Origins of the Crisis''). \url{https://www.fdic.gov/bank/historical/crisis/chap1.pdf}
+
+Federal Reserve Board. (2020). Financial stability report: May 2020. \url{https://www.federalreserve.gov/publications/files/financial-stability-report-20200515.pdf}
+
+Financial Industry Regulatory Authority. (2025). Social media-influenced investing. \url{https://www.finra.org/rules-guidance/key-topics/fintech/report/social-media-influenced-investing}
+
+Kogan, S., Makarov, I., Niessner, M., \& Schoar, A. (2023). Are cryptos different? Evidence from retail trading (NBER Working Paper No. 31317). National Bureau of Economic Research. \url{https://www.nber.org/papers/w31317}
+
+Lee, G., \& Ryu, D. (2024). Investor sentiment or information content? A simple test for investor sentiment proxies. North American Journal of Economics and Finance, 74, 102222. \url{https://doi.org/10.1016/j.najef.2024.102222}
+
+Securities and Exchange Commission. (2021). Staff report on equity and options market structure conditions in early 2021. \url{https://www.sec.gov/files/staff-report-equity-options-market-struction-conditions-early-2021.pdf}
+
+Shiller, R. J. (2017). Narrative economics. American Economic Review, 107(4), 967--1004. \url{https://doi.org/10.1257/aer.107.4.967}
+
+Tetlock, P. C. (2007). Giving content to investor sentiment: The role of media in the stock market. Journal of Finance, 62(3), 1139--1168. \url{https://doi.org/10.1111/j.1540-6261.2007.01232.x}
+
+Warkulat, S., \& Pelster, M. (2024). Social media attention and retail investor behavior: Evidence from r/wallstreetbets. International Review of Financial Analysis, 96, 103721. \url{https://doi.org/10.1016/j.irfa.2024.103721}
+
+\end{document}

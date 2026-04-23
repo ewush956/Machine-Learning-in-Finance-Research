@@ -5,6 +5,7 @@ from paths import MARKDOWN_DIR
 ''' ========== Global Helper Functions ========== '''
 def load_html(filepath: str):
     p = Path(filepath)
+    print(filepath)
     if not p.is_absolute():
         p = (MARKDOWN_DIR / p).resolve()
     try:

@@ -21,13 +21,13 @@ def sharpe_ratio_tab_ui():
                     ui.accordion_panel(
                         "What is it?",
                         load_html(
-                            "Markdown/SharpeRatioHTML/1_what_is_sharpe_ratio.html"
+                            "SharpeRatioHTML/1_what_is_sharpe_ratio.html"
                         ),
                     ),
                     ui.accordion_panel(
                         "Interpretation",
                         load_html(
-                            "Markdown/SharpeRatioHTML/2_sharpe_interpretation.html"
+                            "SharpeRatioHTML/2_sharpe_interpretation.html"
                         ),
                     ),
                     open=[],
@@ -40,18 +40,18 @@ def sharpe_ratio_tab_ui():
                 ui.accordion_panel(
                     "Risk vs Return (Sharpe Tradeoff View)",
                     ui.output_plot("sharpe_risk_return_scatter_plot"),
-                    load_html("Markdown/SharpeRatioHTML/5_risk_return_plot.html"),
+                    load_html("SharpeRatioHTML/5_risk_return_plot.html"),
                 ),
                 ui.accordion_panel(
                     "Rolling Sharpe Ratio (How Risk-Adjusted Performance Changes)",
                     ui.output_plot("sharpe_rolling_ratio_plot"),
-                    load_html("Markdown/SharpeRatioHTML/4_rolling_sharpe_plot.html"),
+                    load_html("SharpeRatioHTML/4_rolling_sharpe_plot.html"),
                 ),
                 ui.accordion_panel(
                     "Sharpe Components by Year (Return, Risk, Ratio)",
                     ui.output_plot("sharpe_components_by_year_plot"),
                     load_html(
-                        "Markdown/SharpeRatioHTML/3_components_by_year_plot.html"
+                        "SharpeRatioHTML/3_components_by_year_plot.html"
                     ),
                 ),
                 style="max-height: 90vh; overflow-y: auto;",
